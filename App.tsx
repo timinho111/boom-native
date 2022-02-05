@@ -1,20 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { default as theme } from './src/themes/custom-theme.json';
+import { default as mapping } from './mapping.json';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { AppNavigator } from './src/components/Navigation';
+import { createServer } from 'miragejs';
+import { teamsJson } from './src/api/teams';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+declare global {
+	interface Window {
+		server: any;
+	}
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+if (window.server) {
+	window.server.shutdown();
+}
+
+window.server = createServer({
+	routes() {
+		this.get('/api/teams', () => {
+			return teamsJson;
+		});
+	},
 });
+export default () => (
+	<>
+		<IconRegistry icons={EvaIconsPack} />
+		<ApplicationProvider
+			{...eva}
+			theme={{ ...eva.dark, ...theme }}
+			customMapping={{ ...eva.mapping, mapping }}
+		>
+			<AppNavigator />
+		</ApplicationProvider>
+	</>
+);
