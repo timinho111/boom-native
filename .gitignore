@@ -12,3 +12,9 @@ web-build/
 
 # macOS
 .DS_Store
+/.idea/boom-native.iml
+/.idea/sonarlint/issuestore/index.pb
+/.idea/modules.xml
+/.idea/prettier.xml
+/.idea/runConfigurations.xml
+/.idea/vcs.xml
