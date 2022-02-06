@@ -7,6 +7,11 @@ import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { AppNavigator } from './src/components/Navigation';
 import { createServer } from 'miragejs';
 import { teamsJson } from './src/api/teams';
+import { clubs } from './src/api/clubs';
+import { Logs } from 'expo';
+import { players } from './src/api/players';
+
+Logs.enableExpoCliLogging();
 
 declare global {
 	interface Window {
@@ -23,8 +28,15 @@ window.server = createServer({
 		this.get('/api/teams', () => {
 			return teamsJson;
 		});
+		this.get('/api/clubs', () => {
+			return clubs;
+		});
+		this.get('/api/players', () => {
+			return players;
+		});
 	},
 });
+
 export default () => (
 	<>
 		<IconRegistry icons={EvaIconsPack} />

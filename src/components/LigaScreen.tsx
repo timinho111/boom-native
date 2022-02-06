@@ -1,21 +1,38 @@
 import { Avatar, Layout, List, ListItem, Text } from '@ui-kitten/components';
 import React, { useEffect, useState } from 'react';
-import { Team } from '../api/models';
-import { teamsJson } from '../api/teams';
+import { ApiClub, Club } from '../api/models';
 import { ImageBackground } from 'react-native';
 
-export const LigaScreen = () => {
-	// create state for teams
-	const [teams, setTeams] = useState({ status: 'loading', data: [] as Team[] });
+export const LigaScreen = ({ navigation }) => {
+	// create state for clubs
+	const [clubs, setClubs] = useState({ status: 'loading', data: [] as Club[] });
 
 	// get teams
 	useEffect(() => {
-		fetch('/api/teams')
+		fetch('/api/clubs')
 			.then((response) => response.json())
-			.then((json) => {
-				console.log(json);
-				setTeams({ status: 'loaded', data: teamsJson });
-			});
+			.catch((error) => console.log(error))
+			.then((thisClubs: ApiClub[]) => {
+				console.log(clubs);
+
+				const newClubs = [] as Club[];
+
+				thisClubs.forEach((club) => {
+					const newClub: Club = {
+						id: club.id,
+						name: club.name.full,
+						threeLetterCode: club.threeLetterCode,
+						image: club.logos[0].uri,
+					};
+					newClubs.push(newClub);
+				});
+
+				setClubs({ status: 'loaded', data: newClubs });
+
+				console.log(newClubs);
+				console.log('loaded');
+			})
+			.catch((error) => console.log(error));
 	}, []);
 
 	// render team icon
@@ -27,18 +44,20 @@ export const LigaScreen = () => {
 			}}
 		/>
 	);
+
 	// render team item
 	const renderItem = ({ item }) => (
 		<ListItem
-			title={`${item.teamName}`}
-			description={`${item.shortName}`}
-			accessoryLeft={renderItemIcon(item.teamIconUrl)}
+			title={`${item.name}`}
+			description={`${item.threeLetterCode}`}
+			accessoryLeft={renderItemIcon(item.image)}
+			onPress={() => navigation.navigate('LigaTeam', { teamId: item.id, name: item.name })}
 		/>
 	);
 
-	return teams.status === 'loaded' ? (
+	return clubs.status === 'loaded' ? (
 		<>
-			<List data={teams.data} renderItem={renderItem} />
+			<List data={clubs.data} renderItem={renderItem} />
 		</>
 	) : (
 		<Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

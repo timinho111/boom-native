@@ -3,8 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation, BottomNavigationTab, Icon, Layout, Text } from '@ui-kitten/components';
 import { LigaScreen } from './LigaScreen';
+import { LigaTeamScreen } from './LigaTeamScreen';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const { Navigator, Screen } = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
 
@@ -53,8 +56,21 @@ const TabNavigator = () => (
 	</Navigator>
 );
 
+const FullNavigator = () => (
+	<Stack.Navigator>
+		<Stack.Group>
+			<Stack.Screen name="TabNavigator" component={TabNavigator} options={{ headerShown: false }} />
+			<Stack.Screen name="Liga" component={LigaScreen} />
+			<Stack.Screen
+				name="LigaTeam"
+				component={LigaTeamScreen}
+				options={({ route }) => ({ title: route.params?.name })}
+			/>
+		</Stack.Group>
+	</Stack.Navigator>
+);
 export const AppNavigator = () => (
 	<NavigationContainer>
-		<TabNavigator />
+		<FullNavigator />
 	</NavigationContainer>
 );
