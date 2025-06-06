@@ -1,3 +1,1 @@
 # boom-native
-
-BOOM MOTHERFUCKERS
